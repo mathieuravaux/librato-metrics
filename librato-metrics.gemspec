@@ -24,7 +24,7 @@ Gem::Specification.new do |s|
   s.extra_rdoc_files = %w[LICENSE]
 
   ## runtime dependencies
-  s.add_dependency 'faraday', '~>0.7.6'
+  s.add_dependency 'faraday', '~>0.8.0'
   s.add_dependency 'multi_json', '~>1.3.1'
   s.add_dependency 'aggregate', '~>0.2.2'
 
