@@ -43,6 +43,19 @@ module Librato
         @api_endpoint = endpoint
       end
 
+      # Faraday adapter to use for HTTP connections
+      #
+      # @return [String] faraday_adapter
+      def faraday_adapter
+        @faraday_adapter ||= Faraday.default_adapter
+      end
+
+      # Set the faraday adapter to use for HTTP connections
+      #
+      def faraday_adapter=(adapter)
+        @faraday_adapter = adapter
+      end
+
       # Authenticate for direct persistence
       #
       # @param [String] email
@@ -57,7 +70,7 @@ module Librato
       def connection
         # prevent successful creation if no credentials set
         raise CredentialsMissing unless (self.email and self.api_key)
-        @connection ||= Connection.new(:client => self, :api_endpoint => api_endpoint)
+        @connection ||= Connection.new(:client => self, :api_endpoint => api_endpoint, :faraday_adapter => faraday_adapter)
       end
       
       # Completely delete metrics with the given names. Be

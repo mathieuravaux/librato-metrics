@@ -18,6 +18,7 @@ module Librato
       def initialize(options={})
         @client = options[:client]
         @api_endpoint = options[:api_endpoint]
+        @faraday_adapter = options[:faraday_adapter]
       end
       
       # API endpoint that will be used for requests.
@@ -28,6 +29,8 @@ module Librato
       
       def transport
         raise(NoClientProvided, "No client provided.") unless @client
+        adapter = @faraday_adapter
+        puts "initializing a connection with adapter #{adapter.inspect}"
         @transport ||= Faraday::Connection.new(:url => api_endpoint + "/v1/") do |f|
           #f.use FaradayMiddleware::EncodeJson
           f.use Librato::Metrics::Middleware::RequestBody
@@ -37,7 +40,7 @@ module Librato
           f.use Librato::Metrics::Middleware::ExpectsStatus
           #f.use FaradayMiddleware::ParseJson, :content_type => /\bjson$/
           
-          f.adapter Faraday.default_adapter
+          f.adapter adapter
         end.tap do |transport|
           transport.headers[:user_agent] = user_agent
           transport.headers[:content_type] = 'application/json'
